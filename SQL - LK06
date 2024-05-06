@@ -88,6 +88,30 @@ VALUES
 ('456789012', 'P003', '42');
 
 /* Agregasi */
+
+/*Agregasi COUNT*/
+SELECT Nama_Departemen_020, COUNT(SSN_020) AS Jumlah_Pegawai
+FROM tabel_departemen_020 d
+JOIN tabel_pegawai_020 p ON d.Nomer_Departemen_020 = p.Nomer_Departemen_020
+GROUP BY Nama_Departemen_020;
+
+/*Agregasi SUM*/
+SELECT Nama_Proyek_020, SUM(Jam_Kerja_020) AS Total_Jam_Kerja
+FROM tabel_bekerja_020 b
+JOIN tabel_proyek_020 p ON b.Nomor_Proyek_020 = p.Nomer_Proyek_020
+GROUP BY Nama_Proyek_020;
+
+/*Agregasi MAX - MIN*/
+SELECT Nama_Departemen_020, MAX(Gaji_020) AS Gaji_Tertinggi, MIN(Gaji_020) AS Gaji_Terendah
+FROM tabel_departemen_020 d
+JOIN tabel_pegawai_020 p ON d.Nomer_Departemen_020 = p.Nomer_Departemen_020
+GROUP BY Nama_Departemen_020;
+
+/*Agregasi AVG*/
+SELECT Jenis_Kelamin_020, AVG(Gaji_020) AS Rata_rata_Gaji
+FROM tabel_pegawai_020
+GROUP BY Jenis_Kelamin_020;
+
 /* 1 */
 SELECT tabel_pegawai_020.SSN_020 AS 'Kartu Identitas Pekerja',
        tabel_bekerja_020.Nomor_Proyek_020 AS 'Nomor Proyek',
