@@ -1,0 +1,115 @@
+/*DDL:*/
+CREATE TABLE `tabel_pegawai_020` (
+    `SSN_020` VARCHAR(50) NOT NULL PRIMARY KEY, 
+    `Nama_020` CHAR(50) NOT NULL, 
+    `Alamat_020` CHAR(50) NOT NULL, 
+    `Telepon_020` CHAR(50) NOT NULL, 
+    `Nomer_Departemen_020` CHAR(50) NOT NULL, 
+    `SuperSSN_020` CHAR(50) NOT NULL, 
+    `Gaji_020` CHAR(50) NOT NULL, 
+    `Jenis_Kelamin_020` CHAR(50) NOT NULL
+);
+
+CREATE TABLE `tabel_keluarga_020` (
+    `ESSN_020` VARCHAR(50) NOT NULL PRIMARY KEY,
+    `Nama_Anggota_020` CHAR(50) NOT NULL,
+    `Hubungan_020` VARCHAR(50) NOT NULL,
+    FOREIGN KEY (`ESSN_020`) REFERENCES `tabel_pegawai_020`(`SSN_020`)
+);
+
+CREATE TABLE `tabel_departemen_020` (
+    `Nomer_Departemen_020` VARCHAR(50) NOT NULL PRIMARY KEY,
+    `Nama_Departemen_020` CHAR(50) NOT NULL,
+    `Manager_SSN_020` VARCHAR(50) NOT NULL,
+    `Manager_Tanggal_020` VARCHAR(50) NOT NULL,
+    FOREIGN KEY (`Manager_SSN_020`) REFERENCES `tabel_pegawai_020`(`SSN_020`)
+);
+
+CREATE TABLE `tabel_departemenlokasi_020` (
+    `Nomer_Departemen_020` VARCHAR(50) NOT NULL,
+    `Alamat_Departemen_020` VARCHAR(50) NOT NULL PRIMARY KEY
+);
+
+CREATE TABLE `tabel_proyek_020` (
+    `Nomer_Proyek_020` VARCHAR(50) NOT NULL PRIMARY KEY,
+    `Nama_Proyek_020` CHAR(50) NOT NULL,
+    `Lokasi_Proyek_020` VARCHAR(50) NOT NULL,
+    `Nomer_Departemen_020` VARCHAR(50) NOT NULL,
+    FOREIGN KEY (`Nomer_Departemen_020`) REFERENCES `tabel_departemen_020`(`Nomer_Departemen_020`)
+);
+
+CREATE TABLE `tabel_bekerja_020` (
+    `ESSN_020` VARCHAR(50) NOT NULL,
+    `Nomor_Proyek_020` CHAR(50) NOT NULL,
+    `Jam_Kerja_020` VARCHAR(50) NOT NULL,
+    PRIMARY KEY (`ESSN_020`, `Nomor_Proyek_020`),
+    FOREIGN KEY (`ESSN_020`) REFERENCES `tabel_pegawai_020`(`SSN_020`),
+    FOREIGN KEY (`Nomor_Proyek_020`) REFERENCES `tabel_proyek_020`(`Nomer_Proyek_020`)
+);
+
+/*DML:*/
+INSERT INTO tabel_pegawai_020 (SSN_020, Nama_020, Alamat_020, Telepon_020, Nomer_Departemen_020, SuperSSN_020, Gaji_020, Jenis_Kelamin_020) 
+VALUES 
+('123456789', 'Adhimu Rizky R', 'Jl. Merdeka No. 10', '081234567890', '001', '987654321', '5000', 'Laki-laki'),
+('234567890', 'Auzan Auzin', 'Jl. Ahmad Yani No. 20', '087654321098', '002', '987654321', '6000', 'Laki-Laki'),
+('345678901', 'I Putu Puti', 'Jl. Diponegoro No. 30', '089876543210', '001', '123456789', '5500', 'Laki-laki'),
+('456789012', 'Sammy Sammay', 'Jl. Sudirman No. 40', '081234567890', '003', '123456789', '5200', 'Laki-Laki');
+
+INSERT INTO tabel_keluarga_020 (ESSN_020, Nama_Anggota_020, Hubungan_020) 
+VALUES 
+('123456789', 'Nasywa Aurelia Santoso', 'Pasangan'),
+('234567890', 'Tiara Andini', 'Pasangan'),
+('345678901', 'Putri Fauzi', 'Anak'),
+('456789012', 'Rahmat Ananda', 'Anak');
+
+INSERT INTO tabel_departemen_020 (Nomer_Departemen_020, Nama_Departemen_020, Manager_SSN_020, Manager_Tanggal_020) 
+VALUES 
+('001', 'Departemen Teknologi', '123456789', '2023-01-01'),
+('002', 'Departemen Pemasaran', '234567890', '2023-01-01'),
+('003', 'Departemen Keuangan', '345678901', '2023-01-01');
+
+INSERT INTO tabel_departemenlokasi_020 (Nomer_Departemen_020, Alamat_Departemen_020) 
+VALUES 
+('001', 'Jl. Brawijaya No. 100'),
+('002', 'Jl. Gajah Mada No. 200'),
+('003', 'Jl. Kedokteran No. 300');
+
+INSERT INTO tabel_proyek_020 (Nomer_Proyek_020, Nama_Proyek_020, Lokasi_Proyek_020, Nomer_Departemen_020) 
+VALUES 
+('P001', 'Proyek A', 'Malang', '001'),
+('P002', 'Proyek B', 'Yogyakarta', '002'),
+('P003', 'Proyek C', 'Surabaya', '003');
+
+INSERT INTO tabel_bekerja_020 (ESSN_020, Nomor_Proyek_020, Jam_Kerja_020) 
+VALUES 
+('123456789', 'P001', '40'),
+('234567890', 'P002', '35'),
+('345678901', 'P001', '38'),
+('456789012', 'P003', '42');
+
+/* Agregasi */
+/* 1 */
+SELECT tabel_pegawai_020.SSN_020 AS 'Kartu Identitas Pekerja',
+       tabel_bekerja_020.Nomor_Proyek_020 AS 'Nomor Proyek',
+       tabel_bekerja_020.Jam_Kerja_020 AS 'Durasi Kerja'
+FROM tabel_pegawai_020
+JOIN tabel_bekerja_020 ON tabel_pegawai_020.SSN_020 = tabel_bekerja_020.ESSN_020;
+/* 2 */
+SELECT tabel_departemen_020.Nama_Departemen_020 AS 'Nama Departemen',
+       tabel_departemen_020.Manager_SSN_020 AS 'Kode Manager'
+FROM tabel_departemen_020;
+/* 3 */
+SELECT tabel_keluarga_020.ESSN_020 AS 'Kode Pegawai',
+       tabel_keluarga_020.Nama_Anggota_020 AS 'Nama Anggota Keluarga',
+       tabel_keluarga_020.Hubungan_020 AS 'Hubungan'
+FROM tabel_keluarga_020;
+/* 4 */
+SELECT tabel_pegawai_020.Nama_020 AS 'Nama Pegawai',
+       tabel_keluarga_020.Nama_Anggota_020 AS 'Nama Anggota Keluarga'
+FROM tabel_pegawai_020
+JOIN tabel_keluarga_020 ON tabel_pegawai_020.SSN_020 = tabel_keluarga_020.ESSN_020;
+/* 5 */
+SELECT tabel_departemen_020.Nama_Departemen_020 AS 'Nama Departemen',
+       tabel_pegawai_020.Nama_020 AS 'Nama Manager'
+FROM tabel_departemen_020
+JOIN tabel_pegawai_020 ON tabel_departemen_020.Manager_SSN_020 = tabel_pegawai_020.SSN_020;
